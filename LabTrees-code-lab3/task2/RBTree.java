@@ -68,9 +68,9 @@ public class RBTree<T extends Comparable<T>> {
 				// Case 1: Recolour
 				// TODO: Implement this part
 				// ########## YOUR CODE STARTS HERE ##########
-				
-				
-				
+				x.parent.colour = Colour.BLACK;
+				uncle.colour = Colour.BLACK;
+				x.parent.parent.colour = Colour.RED;
 				// ########## YOUR CODE ENDS HERE ##########
 				// Check if violated further up the tree
 				x = x.parent.parent;
@@ -88,9 +88,9 @@ public class RBTree<T extends Comparable<T>> {
 						// Perform right rotation
 						// TODO: Implement this part
 						// ########## YOUR CODE STARTS HERE ##########
-						
-						
-						
+						if (x.value == root.value)
+							root = x.left;
+						rotateRight(x);
 						// ########## YOUR CODE ENDS HERE ##########
 					}
 				}
@@ -103,20 +103,13 @@ public class RBTree<T extends Comparable<T>> {
 				if (left) {
 					// Perform right rotation
 					// ########## YOUR CODE STARTS HERE ##########
-					
-				
-
-
+					rotateRight(x.parent.parent);
 					// ########## YOUR CODE ENDS HERE ##########
 				} else {
 					// This is part of the "then" clause where left and right are swapped
 					// Perform left rotation
 					// ########## YOUR CODE STARTS HERE ##########
-
-					
-					
-					
-					
+					rotateLeft(x.parent.parent);
 					// ########## YOUR CODE ENDS HERE ##########
 				}
 			}
@@ -172,9 +165,17 @@ public class RBTree<T extends Comparable<T>> {
 		// TODO: Implement this function
 		// HINT: It is the mirrored version of rotateLeft()
 		// ########## YOUR CODE STARTS HERE ##########
-		
-		
-
+		if (x.parent != null) {
+			if (x.value == x.parent.right.value)
+				x.parent.right = x.left;
+			else
+				x.parent.left = x.left;
+		}
+		x.left.parent = x.parent;
+		x.parent = x.left;
+		x.left = x.parent.right;
+		x.left.parent = x;
+		x.parent.right = x;
 		// ########## YOUR CODE ENDS HERE ##########
 	}
 

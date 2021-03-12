@@ -20,9 +20,36 @@ public class BST {
 	public Integer lowestCommonAncestor(int x, int y) {
 		// TODO
 		// START YOUR CODE
-
-		return null; //you are allowed to change this return statement
+		Node node_x = this.find(x);
+		Node node_y = this.find(y);
+		//you are allowed to change this return statement
+		return lowestCommonAncestor_search(this.root, node_x, node_y).key;
 		// END YOUR CODE
+	}
+
+	/**
+	 * Helper function for the lowestCommonAncestor
+	 * @param root the root of a binary search tree
+	 * @param nodeX the first node want to find
+	 * @param nodeY the second node want to find
+	 * @return the lowest common ancestor node of nodeX and nodeY
+	 */
+	public Node lowestCommonAncestor_search(Node root, Node nodeX, Node nodeY) {
+		if (root == null)
+			return null;
+
+		if (root == nodeX || root == nodeY)
+			return root;
+
+		Node left_search = lowestCommonAncestor_search(root.left, nodeX, nodeY);
+		Node right_search = lowestCommonAncestor_search(root.right, nodeX, nodeY);
+
+		if (left_search != null && right_search != null)
+			return root;
+		else if (left_search == null && right_search == null)
+			return null;
+		else
+			return left_search == null ? right_search : left_search;
 	}
 
 	public BST() {
