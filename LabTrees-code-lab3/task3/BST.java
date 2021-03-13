@@ -13,9 +13,9 @@ public class BST {
 	/**
 	 * Please implement this method and feel free to add additional helper methods
 	 * 
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x integer key 1
+	 * @param y integer key 2
+	 * @return the key of the node of the lowest common ancestor of x and y
 	 */
 	public Integer lowestCommonAncestor(int x, int y) {
 		// TODO
