@@ -6,12 +6,12 @@
 public class Node<T> {
 
 	Colour colour;			// Node colour
-	T value; 				// Node key
+	T key; 				// Node key
 	Node<T> parent; 		// Parent node
 	Node<T> left, right; 	// Child nodes
 
 	public Node(T key) {
-		this.value  = key;
+		this.key  = key;
 		this.colour = Colour.RED; //property 3 (if a node is red, both children are black) may be violated if parent is red
 
 		this.parent = null;
@@ -25,7 +25,7 @@ public class Node<T> {
 
 	// Leaf node
 	public Node() {
-		this.value 	= null; //leaf nodes are null
+		this.key 	= null; //leaf nodes are null
 		this.colour = Colour.BLACK; //leaf nodes are always black
 	}
 }

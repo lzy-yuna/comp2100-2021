@@ -5,6 +5,11 @@
  * the changed tree and they will generally modify existing trees. 
  * 
  * 
+ * The given code is provided to assist you to complete the required tasks. But the 
+ * given code is often incomplete. You have to read and understand the given code 
+ * carefully, before you can apply the code properly. You might need to implement 
+ * additional procedures, such as error checking and handling, in order to apply the 
+ * code properly.
  */
 
 
@@ -27,7 +32,7 @@ public class NonEmptyBinaryTree <T extends Comparable<T>> extends BinaryTree<T> 
 
 	/** 
 	 * Create a NonEmptyBinaryTree with left and right sub-trees
-	 * @param data value of the root node
+	 * @param data key of the root node
 	 * @param left sub-tree of the new NonEmptyBinaryTree tree
 	 * @param right sub-tree of the new NonEmptyBinaryTree tree
 	 */
@@ -38,7 +43,7 @@ public class NonEmptyBinaryTree <T extends Comparable<T>> extends BinaryTree<T> 
 	}
 	
 	/**
-	 * Insert a new node whose value is d into the existing tree.
+	 * Insert a new node whose key is d into the existing tree.
 	 * This function should return the binary tree with d inserted.
 	 * If the tree has already a node with d, do not create a new node 
 	 * and return the original tree.
@@ -97,7 +102,7 @@ public class NonEmptyBinaryTree <T extends Comparable<T>> extends BinaryTree<T> 
 	 * Hint: You can implement delete function recursively. 
 	 * (Each subtree (left or right) is a tree which has a delete function)
 	 * 
-	 * @param d value of the node that should be removed
+	 * @param d key of the node that should be removed
 	 * @return BinaryTree<T> The binary tree without d.
 	 */
 	@Override

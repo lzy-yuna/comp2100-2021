@@ -78,12 +78,12 @@ public class RBTreeTest {
 	
 	@Test(timeout=1000)
 	public void testSearch1() {
-		Assert.assertTrue(tree.search(7).value == 7);
+		Assert.assertTrue(tree.search(7).key == 7);
 	}
 	
 	@Test(timeout=1000)
 	public void testSearch2() {
-		Assert.assertTrue(tree.search(5).value == 5);
+		Assert.assertTrue(tree.search(5).key == 5);
 	}
 	
 	@Test(timeout=1000)

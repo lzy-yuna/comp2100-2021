@@ -3,7 +3,14 @@
  * Skeleton code for Red Black Tree
  * 
  * @param <T> data type
+ * 
+ * The given code is provided to assist you to complete the required tasks. But the 
+ * given code is often incomplete. You have to read and understand the given code 
+ * carefully, before you can apply the code properly. You might need to implement 
+ * additional procedures, such as error checking and handling, in order to apply the 
+ * code properly.
  */
+ 
 public class RBTree<T extends Comparable<T>> {
 	
 	Node<T> root; // The root node of the tree
@@ -22,24 +29,24 @@ public class RBTree<T extends Comparable<T>> {
 	 * @param x    Node<T> New node being inserted.
 	 */
 	private void insertRecurse(Node<T> root, Node<T> x) {
-		int cmp = root.value.compareTo(x.value);
+		int cmp = root.key.compareTo(x.key);
 		
 		if (cmp > 0) {
-			if (root.left.value == null) {
+			if (root.left.key == null) {
 				root.left = x;
 				x.parent = root;
 			} else {
 				insertRecurse(root.left, x);
 			}
 		} else if (cmp < 0) {
-			if (root.right.value == null) {
+			if (root.right.key == null) {
 				root.right = x;
 				x.parent = root;
 			} else {
 				insertRecurse(root.right, x);
 			}
 		}
-		// Do nothing if the tree already has a node with the same value.
+		// Do nothing if the tree already has a node with the same key.
 	}
 
 	/**
@@ -55,12 +62,12 @@ public class RBTree<T extends Comparable<T>> {
 		if (root == null) {
 			root = x;
 		} else {
-			if(search(x.value) != null) return;
+			if(search(x.key) != null) return;
 			insertRecurse(root, x);
 		}
 
 		// Fix tree
-		while (x.value != root.value && x.parent.colour == Colour.RED) {
+		while (x.key != root.key && x.parent.colour == Colour.RED) {
 			boolean left  = x.parent == x.parent.parent.left; // Is parent a left node
 			Node<T> uncle = left ? x.parent.parent.right : x.parent.parent.left; // Get opposite "uncle" node to parent
 
@@ -75,12 +82,12 @@ public class RBTree<T extends Comparable<T>> {
 				// Check if violated further up the tree
 				x = x.parent.parent;
 			} else {
-				if (x.value == (left ? x.parent.right.value : x.parent.left.value)) {
+				if (x.key == (left ? x.parent.right.key : x.parent.left.key)) {
 					// Case 2: Left Rotation, uncle is right node, x is on the right / Right Rotation, uncle is left node, x is on the left
 					x = x.parent;
 					if (left) {
 						// Perform left rotation
-						if (x.value == root.value)
+						if (x.key == root.key)
 							root = x.right; // Update root
 						rotateLeft(x);
 					} else {
@@ -88,7 +95,7 @@ public class RBTree<T extends Comparable<T>> {
 						// Perform right rotation
 						// TODO: Implement this part
 						// ########## YOUR CODE STARTS HERE ##########
-						if (x.value == root.value)
+						if (x.key == root.key)
 							root = x.left;
 						rotateRight(x);
 						// ########## YOUR CODE ENDS HERE ##########
@@ -134,7 +141,7 @@ public class RBTree<T extends Comparable<T>> {
 		// Make parent (if it exists) and right branch point to each other
 		if (x.parent != null) {
 			// Determine whether this node is the left or right child of its parent
-			if (x.parent.left.value == x.value) {
+			if (x.parent.left.key == x.key) {
 				x.parent.left = x.right;
 			} else {
 				x.parent.right = x.right;
@@ -166,7 +173,7 @@ public class RBTree<T extends Comparable<T>> {
 		// HINT: It is the mirrored version of rotateLeft()
 		// ########## YOUR CODE STARTS HERE ##########
 		if (x.parent != null) {
-			if (x.value == x.parent.right.value)
+			if (x.key == x.parent.right.key)
 				x.parent.right = x.left;
 			else
 				x.parent.left = x.left;
@@ -180,12 +187,12 @@ public class RBTree<T extends Comparable<T>> {
 	}
 
 	/**
-	 * Demo functions (Safely) insert a value into the tree
+	 * Demo functions (Safely) insert a key into the tree
 	 * 
-	 * @param value T The value of the new node being inserted.
+	 * @param key T The key of the new node being inserted.
 	 */
-	public void insert(T value) {
-		Node<T> node = new Node<T>(value);
+	public void insert(T key) {
+		Node<T> node = new Node<T>(key);
 		if (node != null)
 			insert(node);
 	}
@@ -197,10 +204,10 @@ public class RBTree<T extends Comparable<T>> {
 	 * @return pre-order traversed tree
 	 */
 	private String preOrder(Node<T> tree) {
-		if (tree != null && tree.value != null) {
+		if (tree != null && tree.key != null) {
 			String leftStr = preOrder(tree.left);
 			String rightStr = preOrder(tree.right);
-			return tree.value + (leftStr.isEmpty() ? leftStr : " " + leftStr)
+			return tree.key + (leftStr.isEmpty() ? leftStr : " " + leftStr)
 					+ (rightStr.isEmpty() ? rightStr : " " + rightStr);
 		}
 
@@ -212,17 +219,17 @@ public class RBTree<T extends Comparable<T>> {
 	}
 
 	/**
-	 * Return the corresponding node of a value, if it exists in the tree
+	 * Return the corresponding node of a key, if it exists in the tree
 	 * 
-	 * @param x Node<T> The root node of the tree we search for the value {@code v}
+	 * @param x Node<T> The root node of the tree we search for the key {@code v}
 	 * @param v Node<T> The node that we are looking for
 	 * @return
 	 */
 	private Node<T> find(Node<T> x, T v) {
-		if (x.value == null)
+		if (x.key == null)
 			return null;
 
-		int cmp = v.compareTo(x.value);
+		int cmp = v.compareTo(x.key);
 		if (cmp < 0)
 			return find(x.left, v);
 		else if (cmp > 0)
@@ -232,9 +239,9 @@ public class RBTree<T extends Comparable<T>> {
 	}
 
 	/**
-	 * Returns a node if the value of the node is {@code key}.
+	 * Returns a node if the key of the node is {@code key}.
 	 * 
-	 * @param key T The value we are looking for
+	 * @param key T The key we are looking for
 	 * @return
 	 */
 	public Node<T> search(T key) {

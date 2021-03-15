@@ -1,11 +1,19 @@
 /**
-Given a binary search tree and two keys of nodes, implement a method to find the key of the lowest common ancestor 
-(i.e. the shared ancestor that is located farthest from the root). You can define additional methods of BST and Node 
-classes to complete the task. The method signature is:
-public Integer lowestCommonAncestor(int x, int y)
-Consider that x and y always exist in the tree.
-Note that the partial code provided uses slightly different (simplified) implementation of BST, which does not use recursion.
-**/
+ * Given a binary search tree and two keys of nodes, implement a method to find the 
+ * key of the lowest common ancestor  (i.e. the shared ancestor that is located farthest 
+ * from the root). You can define additional methods of BST and Node classes to complete 
+ * the task. The method signature is: public Integer lowestCommonAncestor(int x, int y)
+ * Consider that x and y always exist in the tree.
+ * Note that the partial code provided uses slightly different (simplified) implementation 
+ * of BST, which does not use recursion.
+ *
+ * The given code is provided to assist you to complete the required tasks. But the 
+ * given code is often incomplete. You have to read and understand the given code 
+ * carefully, before you can apply the code properly. You might need to implement 
+ * additional procedures, such as error checking and handling, in order to apply the 
+ * code properly.
+ */
+ 
 public class BST {
 
 	Node root;
@@ -22,6 +30,7 @@ public class BST {
 		// START YOUR CODE
 		Node node_x = this.find(x);
 		Node node_y = this.find(y);
+		if (node_x == null || node_y == null) return null;
 		//you are allowed to change this return statement
 		return lowestCommonAncestor_search(this.root, node_x, node_y).key;
 		// END YOUR CODE
