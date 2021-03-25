@@ -42,7 +42,7 @@ public class RBTree<T extends Comparable<T>> {
 	}
 
 	public boolean prop2(Node<T> root) {
-		if (root != null) {
+		if (root.value != null) {
 			if (root.parent != null) {
 				if (root.colour == Colour.RED) {
 					return root.parent.colour == Colour.BLACK && prop2(root.right) && prop2(root.left);
