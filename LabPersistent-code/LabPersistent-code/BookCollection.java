@@ -92,11 +92,17 @@ public class BookCollection {
 		// TODO: Implement this function yourself. The specific hierarchy is up to you,
 		// but it must be in a bespoke format and should match the
 		// load function.
-
-
-		
-		
-		
+		try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+			for (Book element : this.books) {
+				// Use ,,, as delimiter
+				bw.write(element.title + ",,," + element.authorName + ",,," +
+						element.yearReleased + ",,," + element.bookGenre.display());
+				bw.newLine();
+			}
+			bw.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} ;
 	}
 
 	/**
@@ -107,10 +113,12 @@ public class BookCollection {
 	public void saveToJSONFile(File file) {
 		// TODO: Implement this function yourself. The specific hierarchy is up to you,
 		// but it must be in a JSON format and should match the load function.
-
-		
-		
-		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		try (FileWriter fw = new FileWriter(file)) {
+			gson.toJson(this.books, fw);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -122,10 +130,49 @@ public class BookCollection {
 		// TODO: Implement this function yourself. The specific hierarchy is up to you,
 		// but it must be in an XML format and should match the
 		// load function.
-	
-		
-		
-		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document d = db.newDocument();
+
+			Element rootElement = d.createElement("BookCollection");
+			d.appendChild(rootElement);
+
+			for (Book book : this.books) {
+				Element titleElement = d.createElement("Book");
+				titleElement.setAttribute("Title", book.title);
+
+				Element authorElement = d.createElement("Author");
+				authorElement.appendChild(d.createTextNode(book.authorName));
+				titleElement.appendChild(authorElement);
+
+				Element yearElement = d.createElement("YearReleased");
+				yearElement.appendChild(d.createTextNode(Integer.toString(book.yearReleased)));
+				titleElement.appendChild(yearElement);
+
+				Element genreElement = d.createElement("BookGenre");
+				genreElement.appendChild(d.createTextNode(book.bookGenre.display()));
+				titleElement.appendChild(genreElement);
+
+				rootElement.appendChild(titleElement);
+			}
+
+			//transform a source tree into a result tree
+			//Used to process XML from a variety of sources and write the transformation output to a variety of sinks (see transformer documentation)
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			//set encoding
+			transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+			//indent the output document
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+			//create document
+			DOMSource source = new DOMSource(d); //Acts as a holder for a transformation Source tree in the form of a Document Object Model (DOM) tree.
+			StreamResult result = new StreamResult(file);//Acts as a holder for a transformation result, which may be XML,..
+			transformer.transform(source, result); //Transform the XML Source to a Result.
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -136,9 +183,31 @@ public class BookCollection {
 	 */
 	public static BookCollection loadFromBespokeFile(File file) {
 		// TODO: Implement this function yourself.
-		
-		
-		
+		BookCollection rtn = new BookCollection();
+		List<Book> book_list = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new FileReader(file));) {
+			String line;
+			// If there is next line, read-in it
+			while ((line = br.readLine()) != null) {
+				// Use ,,, as delimiter
+				String[] element = line.split(",,,");
+				// Look for the corresponding bookgenre
+				BookGenre bookgenre = null;
+				for (BookGenre genre : BookGenre.values()) {
+					if (genre.name.equals(element[3]))
+						bookgenre = genre;
+				}
+				if (bookgenre == null)
+					throw new IllegalArgumentException("Bad argument for bookgenre, not in the enum type!");
+				// New Book instance
+				Book book = new Book(element[0], element[1], Integer.parseInt(element[2]), bookgenre);
+				book_list.add(book);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		rtn.setList(book_list);
+		return rtn;
 	}
 
 	/**
@@ -149,10 +218,16 @@ public class BookCollection {
 	 */
 	public static BookCollection loadFromJSONFile(File file) {
 		// TODO: Implement this function yourself.
+		Gson gson = new Gson();
+		BookCollection rtn = new BookCollection();
 
-	
-		
-		
+		final Type BOOK_LIST_TYPE = new TypeToken<List<Book>>(){}.getType();
+		try (JsonReader jr = new JsonReader(new FileReader(file))) {
+			rtn.setList(gson.fromJson(jr, BOOK_LIST_TYPE));
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return rtn;
 	}
 
 	/**
@@ -163,9 +238,43 @@ public class BookCollection {
 	 */
 	public static BookCollection loadFromXMLFile(File file) {
 		// TODO: Implement this function yourself.
-		
-		
-		
-		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		BookCollection rtn = new BookCollection();
+		List<Book> book_list = new ArrayList<>();
+
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document d = db.parse(file);
+			d.getDocumentElement().normalize();
+
+			NodeList nodeList = d.getElementsByTagName("Book");
+
+			for (int index = 0; index < nodeList.getLength(); index++) {
+				if (nodeList.item(index).getNodeType() == Node.ELEMENT_NODE) {
+					Element element = (Element) nodeList.item(index);
+
+					String title = element.getAttribute("Title");
+					String author = element.getElementsByTagName("Author").item(0).getTextContent();
+					int year = Integer.parseInt(element.getElementsByTagName("YearReleased").item(0).getTextContent());
+					String genreS = element.getElementsByTagName("BookGenre").item(0).getTextContent();
+					BookGenre bookgenre = null;
+
+					for (BookGenre genre : BookGenre.values()) {
+						if (genre.name.equals(genreS))
+							bookgenre = genre;
+					}
+					if (bookgenre == null)
+						throw new IllegalArgumentException("Bad argument for bookgenre, not in the enum type!");
+
+					Book book = new Book(title, author, year ,bookgenre);
+					book_list.add(book);
+				}
+				rtn.setList(book_list);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return rtn;
 	}
 }
