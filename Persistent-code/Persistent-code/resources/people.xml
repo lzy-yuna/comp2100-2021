@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<People>
+	<Person id= "1">
+		<FirstName>Johnny</FirstName>
+		<LastName>B. Good</LastName>
+	</Person>
+	<Person id= "2">
+		<FirstName>Bart</FirstName>
+		<LastName>Simpson</LastName>
+	</Person>
+</People>
+
+
+
+

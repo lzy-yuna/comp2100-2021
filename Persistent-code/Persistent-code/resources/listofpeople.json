@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "firstname": "Bart",
+    "lastname": "Simpson",
+    "address": {
+      "city": "Springfield",
+      "country": "USA"
+    }
+  },
+  {
+    "id": 2,
+    "firstname": "Homer",
+    "lastname": "Simpson",
+    "address": {
+      "city": "Springfield",
+      "country": "USA"
+    }
+  },
+  {
+    "id": 3,
+    "firstname": "Mickey",
+    "lastname": "Mouse",
+    "address": {
+      "city": "Orlando",
+      "country": "USA"
+    }
+  }
+]
