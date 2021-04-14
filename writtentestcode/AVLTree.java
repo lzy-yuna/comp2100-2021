@@ -47,11 +47,11 @@ public class AVLTree {
         // TODO: Complete this method
         // START YOUR CODE
         if (node == null) {
-            return -1;
+            return 0;
         } else {
             int left = getHeight(node.left);
             int right = getHeight(node.right);
-            return (node.parent == null) ? Math.max(left, right) : (1 + Math.max(left, right));
+            return 1 + Math.max(left, right);
         }
         // END YOUR CODE
     }

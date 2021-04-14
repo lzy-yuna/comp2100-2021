@@ -57,9 +57,9 @@ public class NonEmptyBinaryTree <T extends Comparable<T>> extends BinaryTree<T> 
 	public BinaryTree<T> insert(T d) {
 		// TODO: Add your implementation here
 		// ########## YOUR CODE STARTS HERE ##########
-		if (d.compareTo(data) >= 0)
+		if (d.compareTo(data) > 0)
 			this.right = this.right.insert(d);
-		else
+		else if (d.compareTo(data) < 0)
 			this.left = this.left.insert(d);
 		return this; //you are allowed to change this return statement
 		// ########## YOUR CODE ENDS HERE ##########		

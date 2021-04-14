@@ -111,10 +111,13 @@ public class BST {
 					successor.parent = deleteTarget.parent;
 					successor.left = deleteTarget.left;
 					successor.right = deleteTarget.right;
-					deleteTarget.parent.right.parent = deleteTarget.parent;
+					deleteTarget.left.parent = successor;
+					deleteTarget.right.parent = successor;
 				}
 			}
 			deleteTarget.parent = null;
+			deleteTarget.right = null;
+			deleteTarget.left = null;
 		}
 		// end your code
 	}
