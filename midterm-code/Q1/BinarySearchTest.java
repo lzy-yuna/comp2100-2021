@@ -62,4 +62,16 @@ public class BinarySearchTest {
         assertEquals(null, bs.search(testMatrix,0,9,0,9,101));
     }
 
+    @Test(timeout=1000)
+    public void Test6() {
+        int[][] custom = {{1, 4, 17, 20}, {2, 8, 30, 42}, {3, 9, 37, 48}, {4, 19, 40, 50}};
+        Element<Integer>[][] newTestMatrix = new Element[4][4];
+        for (int i = 0; i < custom.length; i++) {
+            for (int j = 0; j < custom[0].length; j++) {
+                newTestMatrix[i][j] = new Element<>(custom[i][j], 1);
+            }
+        }
+        assertEquals(new Element<>(40, 1).key, bs.search(newTestMatrix, 0, 3, 0, 3, 40).key);
+        assertEquals(new Element<>(40, 1).value, bs.search(newTestMatrix, 0, 3, 0, 3, 40).value);
+    }
 }

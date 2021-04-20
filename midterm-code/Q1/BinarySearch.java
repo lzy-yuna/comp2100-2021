@@ -35,13 +35,61 @@ public class BinarySearch<T extends Comparable<T>>{
         if (target.compareTo(A[minX][minY].key) < 0 || target.compareTo(A[maxX][maxY].key) > 0)
             return null;
 
-        T lower_left = A[minX][maxY].key;
-        if (lower_left.compareTo(target) == 0) {
-            return A[minX][maxY];
-        } else if (lower_left.compareTo(target) < 0) {
-            return search(A, minX + 1, maxX, minY, maxY, target);
+        if (minX == maxX && minY == maxY) {
+            if (A[minX][minY].key.compareTo(target) == 0) {
+                return A[minX][minY];
+            } else {
+                return null;
+            }
         } else {
-            return search(A, minX, maxX, minY, maxY - 1, target);
+            Element<T> quarter1 = null;
+            Element<T> quarter2 = null;
+            int midX = minX + (maxX - minX) / 2;
+            int midY = minY + (maxY - minY) / 2;
+            if (minX == maxX) {
+                quarter1 = search(A, minX, maxX, minY, midY, target);
+                quarter2 = search(A, minX, maxX, midY+1, maxY, target);
+                if (quarter1 == null && quarter2 == null) {
+                    return null;
+                } else {
+                    return quarter1 == null ? quarter2 : quarter1;
+                }
+            } else if (minY == maxY) {
+                quarter1 = search(A, minX, midX, minY, maxY, target);
+                quarter2 = search(A, midX+1, maxX, minY, maxY, target);
+                if (quarter1 == null && quarter2 == null) {
+                    return null;
+                } else {
+                    return quarter1 == null ? quarter2 : quarter1;
+                }
+            } else {
+                Element<T> quarter3 = null;
+                Element<T> quarter4 = null;
+                if (target.compareTo(A[minX][minY].key) >= 0 && target.compareTo(A[midX][midY].key) <= 0) {
+                    quarter1 = search(A, minX, midX, minY, midY, target);
+                }
+                if (target.compareTo(A[midX + 1][minY].key) >= 0 && target.compareTo(A[maxX][midY].key) <= 0) {
+                    quarter2 = search(A, midX + 1, maxX, minY, midY, target);
+                }
+                if (target.compareTo(A[minX][midY + 1].key) >= 0 && target.compareTo(A[midX][maxY].key) <= 0) {
+                    quarter3 = search(A, minX, midX, midY + 1, maxY, target);
+                }
+                if (target.compareTo(A[midX + 1][midY + 1].key) >= 0 && target.compareTo(A[maxX][maxY].key) <= 0) {
+                    quarter4 = search(A, midX + 1, maxX, minY + 1, maxY, target);
+                }
+
+                if (quarter1 == null && quarter2 == null && quarter3 == null && quarter4 == null) {
+                    return null;
+                } else if (quarter1 != null) {
+                    return quarter1;
+                } else if (quarter2 != null) {
+                    return quarter2;
+                } else if (quarter3 != null) {
+                    return quarter3;
+                } else {
+                    return quarter4;
+                }
+            }
         }
         // END YOUR CODE
     }
