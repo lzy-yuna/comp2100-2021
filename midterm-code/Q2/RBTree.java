@@ -79,10 +79,14 @@ public class RBTree<T extends Comparable<T>> {
 				// Case 3 : Right Rotation, uncle is right node, x is on the left / Left Rotation, uncle is left node, x is on the right
 				if (left) {
 					// Perform right rotation
+					if (root.key == node.parent.parent.key)
+						this.root = node.parent;
 					rotateRight(node.parent.parent);
 				} else {
 					// This is part of the "then" clause where left and right are swapped
 					// Perform left rotation
+					if (root.key == node.parent.parent.key)
+						this.root = node.parent;
 					rotateLeft(node.parent.parent);
 				}
 			}
