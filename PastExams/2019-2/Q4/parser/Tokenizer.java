@@ -40,8 +40,46 @@ public class Tokenizer {
         // - Character.isDigit() may be useful in extracting the forward or back value from the buffer.
         // - Use new Token(<type>, <original token str>, <value>) to return these tokens
         // - Check the expected outcome in TokenizerTest.java
+        if (_buffer.startsWith(Token.Type.PENUP.toString()))
+            current = new Token(Token.Type.PENUP);
 
- 
+        else if (_buffer.startsWith(Token.Type.PENDOWN.toString()))
+            current = new Token(Token.Type.PENDOWN);
+
+        else if (_buffer.startsWith(Token.Type.FORWARD_TO_END.toString()))
+            current = new Token(Token.Type.FORWARD_TO_END);
+
+        else if (_buffer.startsWith(Token.Type.BACK_TO_END.toString()))
+            current = new Token(Token.Type.BACK_TO_END);
+
+        else if (_buffer.startsWith(Token.Type.FORWARD.toString())) {
+            int start_index = 0;
+            while (!Character.isDigit(_buffer.charAt(start_index))) {
+                start_index++;
+            }
+            int end_index = start_index;
+            while (Character.isDigit(_buffer.charAt(end_index))) {
+                end_index++;
+            }
+            int value = Integer.parseInt(_buffer.substring(start_index, end_index));
+            current = new Token(Token.Type.FORWARD, _buffer.substring(0, end_index + 1), value);
+        }
+
+        else if (_buffer.startsWith(Token.Type.BACK.toString())) {
+            int start_index = 0;
+            while (!Character.isDigit(_buffer.charAt(start_index))) {
+                start_index++;
+            }
+            int end_index = start_index;
+            while (Character.isDigit(_buffer.charAt(end_index))) {
+                end_index++;
+            }
+            int value = Integer.parseInt(_buffer.substring(start_index, end_index));
+            current = new Token(Token.Type.BACK, _buffer.substring(0, end_index + 1), value);
+        }
+
+        _buffer = _buffer.substring(current.originalTokenStr.length() + 1);
+
     }
     
 

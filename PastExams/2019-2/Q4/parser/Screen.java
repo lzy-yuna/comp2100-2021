@@ -53,6 +53,23 @@ public class Screen {
 		// Hints: append "\n" to create a new line in string
 		//       Note that {@link ScreenTest} doesn't require complete implementation of parser.
 		//       Check the expected outcome in ScreenTest.java
-		return null;
+		StringBuilder rtn = new StringBuilder();
+		for (int i = 0; i < noOfRows; i++) {
+			StringBuilder row = new StringBuilder();
+			for (int j = 0; j < noOfColumns; j++) {
+				if (i == pointer.position.x && j == pointer.position.y) {
+					switch (pointer.direction) {
+						case NORTH -> row.append("^");
+						case EAST -> row.append(">");
+						case SOUTH -> row.append("v");
+						case WEST -> row.append("<");
+					}
+				} else {
+					row.append(trace[i][j]);
+				}
+			}
+			rtn.append(row.append("\n"));
+		}
+		return rtn.toString();
 	}
 }
