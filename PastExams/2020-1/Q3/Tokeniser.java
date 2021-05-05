@@ -40,9 +40,51 @@ public class Tokeniser {
 
 		// TODO: Complete this method
 		// START YOUR CODE
+		int charStart = 0;
+		boolean bracketL = false;
+		boolean bracketR = false;
 
+		if (_buffer.startsWith("INSERT INTO")) {
+			while (charStart < _buffer.length() && !bracketR) {
+				if (_buffer.charAt(charStart) == ')') {
+					bracketR = true;
+				}
+
+				if (_buffer.charAt(charStart) == '(') {
+					bracketL = true;
+				}
+				charStart++;
+			}
+			if (charStart == _buffer.length() - 1 || !bracketL || !bracketR)
+				return null;
+			else {
+				String originalString = _buffer.substring(0, charStart);
+				String insertToValues = _buffer.substring(Token.Type.INSERT_INTO.toString().length() + 1, charStart);
+				return new Token(Token.Type.INSERT_INTO, insertToValues, originalString);
+			}
+		}
+
+		else if (_buffer.startsWith("VALUES")) {
+			while (charStart < _buffer.length() && !bracketR) {
+				if (_buffer.charAt(charStart) == ')') {
+					bracketR = true;
+				}
+
+				if (_buffer.charAt(charStart) == '(') {
+					bracketL = true;
+				}
+				charStart++;
+			}
+			if (charStart == _buffer.length() - 1 || !bracketL || !bracketR)
+				return null;
+			else {
+				String originalString = _buffer.substring(0, charStart);
+				String insertToValues = _buffer.substring(Token.Type.VALUES.toString().length() + 1, charStart);
+				return new Token(Token.Type.VALUES, insertToValues, originalString);
+			}
+		}
 	
-		
+
 		// You are allowed to remove the following 'return null' if necessary
 		return null;
 		

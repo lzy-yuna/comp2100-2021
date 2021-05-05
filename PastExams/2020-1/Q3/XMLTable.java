@@ -12,6 +12,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * IMPORTANT: This class is incomplete. Please look for "TODO" comments.
@@ -115,8 +117,36 @@ public class XMLTable {
 
 		// TODO: Complete this method
 		// START YOUR CODE
+		try {
+			Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(f);
+			d.getDocumentElement().normalize();
 
-		
+			Element customersElement = (Element) d.getElementsByTagName(Customer.KEY_ROOT).item(0);
+			NodeList nl = customersElement.getChildNodes();
+
+			for (int index = 0; index < nl.getLength(); index++){
+				if (nl.item(index).getNodeType() == Node.ELEMENT_NODE) {
+					Element customerNode = (Element) nl.item(index);
+
+					int id = Integer.parseInt(customerNode.getElementsByTagName(Customer.KEY_ID).item(0).getTextContent());
+					Node nameNode = customerNode.getElementsByTagName(Customer.KEY_NAME).item(0);
+					String name = nameNode == null ? null : nameNode.getTextContent();
+					Node addressNode = customerNode.getElementsByTagName(Customer.KEY_ADDRESS).item(0);
+					String address = addressNode == null ? null : addressNode.getTextContent();
+					Node cityNode = customerNode.getElementsByTagName(Customer.KEY_CITY).item(0);
+					String city = cityNode == null ? null : cityNode.getTextContent();
+					Node postcodeNode = customerNode.getElementsByTagName(Customer.KEY_POSTCODE).item(0);
+					String postcode = postcodeNode == null ? null : postcodeNode.getTextContent();
+					Node countryNode = customerNode.getElementsByTagName(Customer.KEY_COUNTRY).item(0);
+					String country = countryNode == null ? null : countryNode.getTextContent();
+					customers.add(new Customer(id, name, address, city, postcode, country));
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 
 		// END YOUR CODE
 
@@ -134,7 +164,9 @@ public class XMLTable {
 		// START YOU CODE
 		// HINT: insert the given customer to the XML file.
 		// You can call the load() and save() methods
-		
+		List<Customer> customers = load(tableName);
+		customers.add(customer);
+		save(tableName, customers);
 
 		
 		// END YOUR CODE
