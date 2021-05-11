@@ -1,7 +1,8 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,15 @@ public class Company {
 	public static Company loadFromJsonFile(File file) {
 
 		// START YOUR CODE
+		Gson gson = new Gson();
 
+		try (JsonReader jr = new JsonReader(new FileReader(file))) {
+
+			return gson.fromJson(jr, Company.class);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 
 		// END YOUR CODE
@@ -52,9 +61,16 @@ public class Company {
 	public void serializeToFile(File file) {
 
 		// START YOUR CODE
-
-
-
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+			oos.writeObject(this.name);
+			oos.writeInt(employees.size());
+			for (Employee employee : employees) {
+				oos.writeObject(employee);
+			}
+			oos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		// END YOUR CODE
 	}
 	
@@ -85,8 +101,15 @@ public class Company {
 	public void saveToJsonFile(File file) {
 
 		// START YOUR CODE
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+		try (FileWriter fw = new FileWriter(file)) {
 
+			gson.toJson(this, fw);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		// END YOUR CODE
 	}
@@ -98,9 +121,15 @@ public class Company {
 	 */
 	public void removeEmployeesWhoDoNotKnowJava() {
 		// START YOUR CODE
-
-
-
+		List<Employee> removeEmployee = new ArrayList<>();
+		for (Employee employee : employees) {
+			if (!employee.getSkills().contains("Java")) {
+				removeEmployee.add(employee);
+			}
+		}
+		for (Employee employee : removeEmployee) {
+			employees.remove(employee);
+		}
 		// END YOUR CODE
 	}
 
