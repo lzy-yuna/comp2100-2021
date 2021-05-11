@@ -1,4 +1,21 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,7 +54,58 @@ public class StudentCollection {
 	 */
 	public void saveToFile(File file) {
 		//START YOUR CODE
-		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document d = db.newDocument();
+
+			Element rootElement = d.createElement("Students");
+			d.appendChild(rootElement);
+
+			for (Student student : students) {
+				Element subStudent = d.createElement("Student");
+
+				subStudent.setAttribute("Name", student.getName());
+
+				if (student.getAge() != null) {
+					subStudent.setAttribute("Age", Integer.toString(student.getAge()));
+				}
+
+				if (student.getHeight() != null) {
+					subStudent.setAttribute("Height", Integer.toString(student.getHeight()));
+				}
+
+				if (student.getWeight() != null) {
+					subStudent.setAttribute("Weight", Integer.toString(student.getWeight()));
+				}
+
+				if (student.getCourses() != null) {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < student.getCourses().size(); i++) {
+						String courseS = student.getCourses().get(i).getName() +
+								"," + student.getCourses().get(i).getGrade();
+						if (i == 0) {
+							sb.append(courseS);
+						} else {
+							sb.append(";").append(courseS);
+						}
+					}
+					subStudent.setAttribute("Courses", sb.toString());
+				}
+
+				rootElement.appendChild(subStudent);
+			}
+
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+			DOMSource source = new DOMSource(d);
+			StreamResult result = new StreamResult(file);
+			transformer.transform(source, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		//END YOUR CODE
 	}
 
@@ -49,7 +117,58 @@ public class StudentCollection {
 	 */
 	public static StudentCollection loadFromFile(File file) {
 		//START YOUR CODE
-		
+		List<Student> students = new ArrayList<>();
+
+		try {
+			Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+
+			d.getDocumentElement().normalize();
+
+			NodeList nodeList = d.getElementsByTagName("Student");
+
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					Element currentStudent = (Element) nodeList.item(i);
+
+					String name = currentStudent.getAttribute("Name");
+
+					Integer age = null;
+					if (!currentStudent.getAttribute("Age").equals("")) {
+						age = Integer.parseInt(currentStudent.getAttribute("Age"));
+					}
+
+					Integer height = null;
+					if (!currentStudent.getAttribute("Height").equals("")) {
+						height = Integer.parseInt(currentStudent.getAttribute("Height"));
+					}
+
+					Integer weight = null;
+					if (!currentStudent.getAttribute("Weight").equals("")) {
+						weight = Integer.parseInt(currentStudent.getAttribute("Weight"));
+					}
+
+					List<Course> courses = null;
+					if (!currentStudent.getAttribute("Courses").equals("")) {
+						courses = new ArrayList<>();
+						for (String course : currentStudent.getAttribute("Courses").split(";")) {
+							courses.add(new Course(course.split(",")[0], Integer.parseInt(course.split(",")[1])));
+						}
+					}
+
+					Student student = new Student();
+					student.withName(name).withAge(age).withWeight(weight).withHeight(height);
+					if (courses != null) {
+						for (Course course : courses) {
+							student.addCourse(course);
+						}
+					}
+					students.add(student);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new StudentCollection(students);
 		//END YOUR CODE
 	}
 
