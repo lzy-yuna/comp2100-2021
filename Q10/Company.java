@@ -1,5 +1,14 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
+
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -32,9 +41,14 @@ public class Company {
 	public static Company loadFromJsonFile(File file) {
 
 		// START YOUR CODE
+		Gson gson = new Gson();
+		try (JsonReader jr = new JsonReader(new FileReader(file))) {
 
+			return gson.fromJson(jr, Company.class);
 
-
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		// END YOUR CODE
 
 		return null;
@@ -48,9 +62,21 @@ public class Company {
 	public void mergeEmployees() {
 
 		// START YOUR CODE
-
-
-
+		List<Employee> newEmployees = new ArrayList<>();
+		Set<String> alreadyChecked = new HashSet<>();
+		for (Employee employee : employees) {
+			if (!alreadyChecked.contains(employee.getName())) {
+				alreadyChecked.add(employee.getName());
+				List<String> skills = new ArrayList<>(employee.getSkills());
+				for (Employee employee1 : employees) {
+					if (!employee.equals(employee1)) {
+						skills.addAll(employee1.getSkills());
+					}
+				}
+				newEmployees.add(new Employee(employee.getName(), skills));
+			}
+		}
+		employees = newEmployees;
 		// END YOUR CODE
 	}
 
@@ -62,9 +88,15 @@ public class Company {
 	public void saveToJsonFile(File file) {
 
 		// START YOUR CODE
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+		try (FileWriter fw = new FileWriter(file)) {
 
+			gson.toJson(this, fw);
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		// END YOUR CODE
 	}
 
