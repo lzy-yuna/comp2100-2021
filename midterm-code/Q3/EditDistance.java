@@ -1,6 +1,6 @@
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Skeleton code for Edit Distance Computation of DNA sequences.
@@ -30,7 +30,8 @@ public class EditDistance {
         int iteration = (x_len + 1) * (y_len + 1);
 
         // where the lowest cost from (x,y) to destination is stored
-        HashMap<String, Integer> costTable = new HashMap<>();
+        int[][] dp = new int[x_len+1][y_len+1];
+
         // initialize values for costTable
         for (int i = 0; i <= x_len; i++) {
             for (int j = 0; j <= y_len; j++) {
@@ -41,44 +42,44 @@ public class EditDistance {
                 } else {
                     cost = Integer.MAX_VALUE;
                 }
-                costTable.put(key, cost);
+                dp[i][j] = cost;
             }
         }
         // update values inside costTable
-        for (int i = 0; i < iteration; i++) {
-            for (String s : costTable.keySet()) {
-                // get the current coordinates
-                int x_coordinate = Integer.parseInt(s.split(",")[0]);
-                int y_coordinate = Integer.parseInt(s.split(",")[1]);
-                HashSet<Integer> op_costs = new HashSet<>();
-                // DELETE op
-                if (x_coordinate < Math.abs(x_len)) {
-                    char current = seq1.charAt(x_coordinate);
-                    op_costs.add(EditCost.getDeleteCost(EditCost.convertToIndex(current)) +
-                            costTable.get((x_coordinate + 1) + "," + y_coordinate));
-                }
-                // INSERT op
-                if (y_coordinate < Math.abs(y_len)) {
-                    char current = seq2.charAt(y_coordinate);
-                    op_costs.add(EditCost.getInsertCost(EditCost.convertToIndex(current)) +
-                            costTable.get(x_coordinate + "," + (y_coordinate + 1)));
-                }
-                // REPLACE op
-                if (x_coordinate < Math.abs(x_len) && y_coordinate < Math.abs(y_len)) {
-                    // Use existing char to replace (no cost)
-                    char c1 = seq1.charAt(x_coordinate);
-                    char c2 = seq2.charAt(y_coordinate);
-                    op_costs.add(EditCost.getReplaceCost(EditCost.convertToIndex(c1), EditCost.convertToIndex(c2)) +
-                            costTable.get((x_coordinate + 1) + "," + (y_coordinate + 1)));
-                }
-                // if there is possible operation, update the lowest cost to costTable
-                if (op_costs.size() != 0) {
-                    costTable.put(s, Collections.min(op_costs));
+        for (int x = 0; x < iteration; x++) {
+            for (int i = 0; i < dp.length; i++) {
+                for (int j = 0; j < dp[0].length; j++) {
+                    // get the current coordinates
+                    Set<Integer> op_costs = new HashSet<>();
+                    // DELETE op
+                    if (i < Math.abs(x_len)) {
+                        char current = seq1.charAt(i);
+                        op_costs.add(EditCost.getDeleteCost(EditCost.convertToIndex(current)) +
+                                dp[i+1][j]);
+                    }
+                    // INSERT op
+                    if (j < Math.abs(y_len)) {
+                        char current = seq2.charAt(j);
+                        op_costs.add(EditCost.getInsertCost(EditCost.convertToIndex(current)) +
+                                dp[i][j+1]);
+                    }
+                    // REPLACE op
+                    if (i < Math.abs(x_len) && j < Math.abs(y_len)) {
+                        // Use existing char to replace (no cost)
+                        char c1 = seq1.charAt(i);
+                        char c2 = seq2.charAt(j);
+                        op_costs.add(EditCost.getReplaceCost(EditCost.convertToIndex(c1), EditCost.convertToIndex(c2)) +
+                                dp[i+1][j+1]);
+                    }
+                    // if there is possible operation, update the lowest cost to costTable
+                    if (op_costs.size() != 0) {
+                        dp[i][j] = Collections.min(op_costs);
+                    }
                 }
             }
         }
         // return the lowest cost from (0,0) to destination
-        return costTable.get("0,0");
+        return dp[0][0];
         // END YOUR CODE
 
     }
